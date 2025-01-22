@@ -54,7 +54,7 @@ class PhoneBookController:
     def modify_contact(self, contact_id, data) -> bool:
         contact = self.repo.get_contact_by_id(contact_id)
         for field, val in data.items():
-            if val is not None:
+            if val:
                 contact.__dict__[field] = val
         return True
 
