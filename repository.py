@@ -45,7 +45,7 @@ class PhoneBookRepository:
             self.contacts.pop(contact_id)
             return True
         except KeyError:
-            return False
+            raise
 
     @work_ready_checker
     def get_contacts(self) -> Dict[int, Contact]:
