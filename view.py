@@ -102,7 +102,7 @@ class PhoneBookView:
             self.text_lines['new_contact_info'],
         ]
         for field, req in zip(data.keys(), input_requests):
-            data[field] = self._get_input_data(req)
+            data[field] = input(req)
         return data
 
     def _get_id_of_contact(self) -> int:
@@ -120,10 +120,6 @@ class PhoneBookView:
         if self.cont.remove_contact(contact_id=choice):
             return self.text_lines['contact_remove_success']
         return self.text_lines['contact_remove_fail']
-
-    @staticmethod
-    def _get_input_data(req: str):
-        return input(req)
 
     @print_prettied_output
     def change_lang(self, new_text_lines: Dict[str, str]):
