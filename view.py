@@ -53,12 +53,10 @@ class PhoneBookView:
     def modify_contact(self):
         contact_id = self._get_id_of_contact()
         data = self._get_data_for_update()
-        try:
-            self.cont.modify_contact(contact_id, data)
+        if self.cont.modify_contact(contact_id, data):
             return self.text_lines['modify_cont_success']
-        except KeyError:
-            return (f"{self.text_lines['modify_cont_fail_no_such_id']} "
-                    f"{contact_id}")
+        return (f"{self.text_lines['modify_cont_fail_no_such_id']} "
+                f"{contact_id}")
 
     def _get_data_for_update(self):
         res = {'name': self.text_lines['modify_contact_name'],
