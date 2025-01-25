@@ -116,13 +116,10 @@ class PhoneBookView:
     def _get_new_contact_data(self) -> Dict[str, str]:
         """ Gets new 1.name, 2.number and 3.info from input() calls and
          returns them as dict. """
-        data = {'name': '', 'number': '', 'info': ''}
-        input_requests = [
-            self.text_lines['new_contact_name'],
-            self.text_lines['new_contact_number'],
-            self.text_lines['new_contact_info'],
-        ]
-        for field, req in zip(data.keys(), input_requests):
+        data = {'name': self.text_lines['new_contact_name'],
+                'number': self.text_lines['new_contact_number'],
+                'info': self.text_lines['new_contact_info']}
+        for field, req in data.items():
             data[field] = input(req)
         return data
 
