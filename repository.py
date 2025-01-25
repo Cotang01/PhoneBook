@@ -1,6 +1,6 @@
 from model import Contact
 
-from typing import Dict
+from typing import Dict, Callable
 
 
 class PhoneBookRepository:
@@ -12,7 +12,7 @@ class PhoneBookRepository:
         self.work_ready = False
 
     @staticmethod
-    def work_ready_checker(func):
+    def work_ready_checker(func: Callable):
         """ Decorator that prevents any changes in contacts' data if the data
          has not been loaded. """
         def wrapper(self, *args, **kwargs):

@@ -35,27 +35,27 @@ class PhoneBookController:
         return wrapper
 
     @log_exec_and_catch_excep
-    def load_book(self):
+    def load_book(self) -> None:
         self.repo.load_contacts()
 
     @log_exec_and_catch_excep
-    def save_book(self):
+    def save_book(self) -> None:
         self.repo.save_contacts()
 
-    def get_work_time(self):
+    def get_work_time(self) -> float:
         """ Returns working time in seconds. """
         return time() - self.launched_at
 
     @log_exec_and_catch_excep
-    def add_contact(self, data: dict[str, str]):
+    def add_contact(self, data: dict[str, str]) -> None:
         self.repo.add_contact(Contact(**data))
 
     @log_exec_and_catch_excep
-    def remove_contact(self, contact_id) -> bool:
+    def remove_contact(self, contact_id: int) -> bool:
         return self.repo.delete_contact_by_id(contact_id=contact_id)
 
     @log_exec_and_catch_excep
-    def modify_contact(self, contact_id, data) -> bool:
+    def modify_contact(self, contact_id: int, data: Dict[str, str]) -> bool:
         contact = self.repo.get_contact_by_id(contact_id)
         if contact is None:
             return False

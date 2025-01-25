@@ -1,5 +1,5 @@
 from controller import PhoneBookController
-from typing import Dict, Iterable, Callable, Generator
+from typing import Dict
 
 from parsers import IniLocalizationParser
 
@@ -32,7 +32,7 @@ class PhoneBookView:
 
         return wrapper
 
-    def get_user_choice(self):
+    def get_user_choice(self) -> str:
         """ Gets and validates user's input to be in range of valid options of
         PhoneBook functionality. """
         choice = input(self.text_lines['get_user_option'])
@@ -41,14 +41,14 @@ class PhoneBookView:
             choice = self.get_user_choice()
         return choice
 
-    def set_localization(self) -> Dict:
+    def set_localization(self) -> Dict[str, str]:
         """ Takes user's localization choice and loads strings from
          .ini file with localization data (key = value)"""
         lang_choice = self._get_localization_choice()
         return IniLocalizationParser.read_properties_file(
             self.valid_langs[lang_choice])
 
-    def _get_localization_choice(self):
+    def _get_localization_choice(self) -> str:
         """ Gets user's input and checks if input is in keys of
          provided cfg.ini file {lang: path_to_strings.ini, ...}"""
         choice = input('Choose language/Выберите язык:\n[ru, eng] 🖝 ')
@@ -59,7 +59,7 @@ class PhoneBookView:
         return choice
 
     @print_prettied_output
-    def show_contacts(self):
+    def show_contacts(self) -> str:
         """ Returns current state of Contacts. """
         contacts_data = '\n'.join(
             [f'{k} - {v}' for k, v in self.cont.get_str_contacts().items()]
@@ -72,13 +72,13 @@ class PhoneBookView:
         return self.text_lines['menu_options']
 
     @print_prettied_output
-    def load_book(self):
+    def load_book(self) -> str:
         """ Makes call to controller layer to load data. """
         self.cont.load_book()
         return self.text_lines['book_loaded']
 
     @print_prettied_output
-    def modify_contact(self):
+    def modify_contact(self) -> str:
         """ Makes call to controller layer to modify one of Contact's data
          by id. """
         contact_id = self._get_id_of_contact()
@@ -88,7 +88,7 @@ class PhoneBookView:
         return (f"{self.text_lines['modify_cont_fail_no_such_id']} "
                 f"{contact_id}")
 
-    def _get_data_for_update(self):
+    def _get_data_for_update(self) -> Dict[str, str]:
         """ Asks user which data to change: \n
         name -> input(); number -> input(); info -> input(). """
         res = {'name': self.text_lines['modify_contact_name'],
@@ -99,21 +99,21 @@ class PhoneBookView:
         return res
 
     @print_prettied_output
-    def save_book(self):
+    def save_book(self) -> str:
         """ Makes call to controller layer to save current state of data
         into file and returns respective answer. """
         self.cont.save_book()
         return self.text_lines['book_saved']
 
     @print_prettied_output
-    def create_new_contact(self):
+    def create_new_contact(self) -> str:
         """ Gets data from user's input and makes call to controller layer to
          create new Contact obj based on retrieved data. """
         data = self._get_new_contact_data()
         self.cont.add_contact(data=data)
         return self.text_lines['contact_created']
 
-    def _get_new_contact_data(self):
+    def _get_new_contact_data(self) -> Dict[str, str]:
         """ Gets new 1.name, 2.number and 3.info from input() calls and
          returns them as dict. """
         data = {'name': '', 'number': '', 'info': ''}
@@ -134,7 +134,7 @@ class PhoneBookView:
         return int(id_to_delete)
 
     @print_prettied_output
-    def remove_contact(self):
+    def remove_contact(self) -> str:
         """ Makes call to controller layer to delete contact by id from
         input(). Returns respective answer."""
         choice = self._get_id_of_contact()
@@ -143,14 +143,14 @@ class PhoneBookView:
         return self.text_lines['contact_remove_fail']
 
     @print_prettied_output
-    def change_lang(self):
+    def change_lang(self) -> str:
         """ Replaces current localization lines with new ones. Returns
         respective answer."""
         self.text_lines = self.set_localization()
         return self.text_lines['lang_change_success']
 
     @print_prettied_output
-    def show_working_time(self):
+    def show_working_time(self) -> str:
         """ Returns working time of controller as 'x.xx seconds' """
         return (f'{round(self.cont.get_work_time(), ndigits=2)} '
                 f'{self.text_lines['work_time']}')

@@ -32,7 +32,7 @@ class IniConfigParse:
 
 class IniLocalizationParser:
     @staticmethod
-    def read_properties_file(file_path: str) -> Dict:
+    def read_properties_file(file_path: str) -> Dict[str, str]:
         """ Get dict with localization data. """
         config = configparser.ConfigParser(allow_no_value=True)
         with open(file_path, 'r', encoding='UTF-8') as f:

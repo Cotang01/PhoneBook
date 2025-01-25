@@ -1,8 +1,7 @@
-from typing import Dict
 from controller import PhoneBookController
 from repository import PhoneBookRepository
 from view import PhoneBookView
-from parsers import IniConfigParse, IniLocalizationParser
+from parsers import IniConfigParse
 from logger import get_logger
 
 
@@ -28,7 +27,7 @@ class PhoneBookApp:
             self.cfg.lang
         )
 
-    def run(self):
+    def run(self) -> None:
         """ Main app function managing it's following behaviour based on
         user's choices. """
         while True:
