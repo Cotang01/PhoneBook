@@ -37,5 +37,4 @@ class IniLocalizationParser:
         config = configparser.ConfigParser(allow_no_value=True)
         with open(file_path, 'r', encoding='UTF-8') as f:
             config.read_string(f'[localization]\n' + f.read())
-        # return dict(config.__dict__['_sections']['localization'])
         return dict(config.__dict__['_sections']['localization'])
