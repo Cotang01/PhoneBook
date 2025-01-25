@@ -1,17 +1,20 @@
 from controller import PhoneBookController
 from typing import Dict, Iterable, Callable, Generator
 
+from parsers import IniLocalizationParser
+
 
 class PhoneBookView:
-    def __init__(self, controller: PhoneBookController,
-                 text_lines: Dict[str, str]):
+    def __init__(self, controller: PhoneBookController, valid_langs: dict):
         self.cont = controller
-        self.text_lines = text_lines
+        self.valid_langs = valid_langs
+        self.text_lines = self.set_localization()
 
     @staticmethod
     def print_prettied_output(func):
         """ Decorator that prints view functions results with borders.
          Function must return str obj for decorator to print it. """
+
         def wrapper(self, *args, **kwargs):
             res = []
             cur_max = 0
@@ -26,6 +29,7 @@ class PhoneBookView:
             res.append(f'╚{'═' * cur_max}╝')
             print('\n'.join(res))
             return func_res
+
         return wrapper
 
     def get_user_choice(self):
@@ -35,6 +39,23 @@ class PhoneBookView:
         if not choice.isdigit() or not 0 < (choice := int(choice)) < 10:
             print('⌀')
             choice = self.get_user_choice()
+        return choice
+
+    def set_localization(self) -> Dict:
+        """ Takes user's localization choice and loads strings from
+         .ini file with localization data (key = value)"""
+        lang_choice = self._get_localization_choice()
+        return IniLocalizationParser.read_properties_file(
+            self.valid_langs[lang_choice])
+
+    def _get_localization_choice(self):
+        """ Gets user's input and checks if input is in keys of
+         provided cfg.ini file {lang: path_to_strings.ini, ...}"""
+        choice = input('Choose language/Выберите язык:\n[ru, eng] 🖝 ')
+        # choice = 'ru'
+        if choice.lower() not in self.valid_langs.keys():
+            print('⌀')
+            choice = self._get_localization_choice()
         return choice
 
     @print_prettied_output
@@ -122,10 +143,10 @@ class PhoneBookView:
         return self.text_lines['contact_remove_fail']
 
     @print_prettied_output
-    def change_lang(self, new_text_lines: Dict[str, str]):
+    def change_lang(self):
         """ Replaces current localization lines with new ones. Returns
         respective answer."""
-        self.text_lines = new_text_lines
+        self.text_lines = self.set_localization()
         return self.text_lines['lang_change_success']
 
     @print_prettied_output
