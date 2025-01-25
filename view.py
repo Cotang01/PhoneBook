@@ -10,6 +10,8 @@ class PhoneBookView:
 
     @staticmethod
     def print_prettied_output(func):
+        """ Decorator that prints view functions results with borders.
+         Function must return str obj for decorator to print it. """
         def wrapper(self, *args, **kwargs):
             res = []
             cur_max = 0
@@ -27,6 +29,8 @@ class PhoneBookView:
         return wrapper
 
     def get_user_choice(self):
+        """ Gets and validates user's input to be in range of valid options of
+        PhoneBook functionality. """
         choice = input(self.text_lines['get_user_option'])
         if not choice.isdigit() or not 0 < (choice := int(choice)) < 10:
             print('⌀')
@@ -35,6 +39,7 @@ class PhoneBookView:
 
     @print_prettied_output
     def show_contacts(self):
+        """ Returns current state of Contacts. """
         contacts_data = '\n'.join(
             [f'{k} - {v}' for k, v in self.cont.get_str_contacts().items()]
         )
@@ -42,15 +47,19 @@ class PhoneBookView:
 
     @print_prettied_output
     def get_menu(self) -> str:
+        """ Returns valid options of PhoneBook functionality. """
         return self.text_lines['menu_options']
 
     @print_prettied_output
     def load_book(self):
+        """ Makes call to controller layer to load data. """
         self.cont.load_book()
         return self.text_lines['book_loaded']
 
     @print_prettied_output
     def modify_contact(self):
+        """ Makes call to controller layer to modify one of Contact's data
+         by id. """
         contact_id = self._get_id_of_contact()
         data = self._get_data_for_update()
         if self.cont.modify_contact(contact_id, data):
@@ -59,6 +68,8 @@ class PhoneBookView:
                 f"{contact_id}")
 
     def _get_data_for_update(self):
+        """ Asks user which data to change: \n
+        name -> input(); number -> input(); info -> input(). """
         res = {'name': self.text_lines['modify_contact_name'],
                'number': self.text_lines['modify_contact_number'],
                'info': self.text_lines['modify_contact_info']}
@@ -68,16 +79,22 @@ class PhoneBookView:
 
     @print_prettied_output
     def save_book(self):
+        """ Makes call to controller layer to save current state of data
+        into file and returns respective answer. """
         self.cont.save_book()
         return self.text_lines['book_saved']
 
     @print_prettied_output
     def create_new_contact(self):
+        """ Gets data from user's input and makes call to controller layer to
+         create new Contact obj based on retrieved data. """
         data = self._get_new_contact_data()
         self.cont.add_contact(data=data)
         return self.text_lines['contact_created']
 
     def _get_new_contact_data(self):
+        """ Gets new 1.name, 2.number and 3.info from input() calls and
+         returns them as dict. """
         data = {'name': '', 'number': '', 'info': ''}
         input_requests = [
             self.text_lines['new_contact_name'],
@@ -89,6 +106,7 @@ class PhoneBookView:
         return data
 
     def _get_id_of_contact(self) -> int:
+        """ Gets input() until it's number and returns it. """
         id_to_delete = input(self.text_lines['id_to_change'])
         if not id_to_delete.isdigit():
             id_to_delete = self._get_id_of_contact()
@@ -96,6 +114,8 @@ class PhoneBookView:
 
     @print_prettied_output
     def remove_contact(self):
+        """ Makes call to controller layer to delete contact by id from
+        input(). Returns respective answer."""
         choice = self._get_id_of_contact()
         if self.cont.remove_contact(contact_id=choice):
             return self.text_lines['contact_remove_success']
@@ -107,11 +127,14 @@ class PhoneBookView:
 
     @print_prettied_output
     def change_lang(self, new_text_lines: Dict[str, str]):
+        """ Replaces current localization lines with new ones. Returns
+        respective answer."""
         self.text_lines = new_text_lines
         return self.text_lines['lang_change_success']
 
     @print_prettied_output
     def show_working_time(self):
+        """ Returns working time of controller as 'x.xx seconds' """
         return (f'{round(self.cont.get_work_time(), ndigits=2)} '
                 f'{self.text_lines['work_time']}')
 

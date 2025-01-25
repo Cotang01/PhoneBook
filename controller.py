@@ -8,6 +8,7 @@ from functools import wraps
 
 
 class PhoneBookController:
+    """ App's controller layer class """
     def __init__(self, repo: PhoneBookRepository, logger: Logger = None):
         self.repo = repo
         match logger.__class__.__name__:
@@ -20,6 +21,8 @@ class PhoneBookController:
 
     @staticmethod
     def log_exec_and_catch_excep(func):
+        """ Decorator that logs execution of functions and catches
+        exceptions. """
         @wraps(func)  # to access __name__
         def wrapper(self, *args, **kwargs):
             self.logger.info(f'Executing {func.__name__} with'
@@ -40,6 +43,7 @@ class PhoneBookController:
         self.repo.save_contacts()
 
     def get_work_time(self):
+        """ Returns working time in seconds. """
         return time() - self.launched_at
 
     @log_exec_and_catch_excep

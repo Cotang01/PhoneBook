@@ -4,6 +4,7 @@ from typing import Dict
 
 
 class PhoneBookRepository:
+    """ App's repository layer class. """
     def __init__(self, file_path: str):
         self.file_path = file_path
         self.contacts: dict[int, Contact] = {}
@@ -12,6 +13,8 @@ class PhoneBookRepository:
 
     @staticmethod
     def work_ready_checker(func):
+        """ Decorator that prevents any changes in contacts' data if the data
+         has not been loaded. """
         def wrapper(self, *args, **kwargs):
             if self.work_ready is not True:
                 self.load_contacts()
@@ -19,6 +22,9 @@ class PhoneBookRepository:
         return wrapper
 
     def load_contacts(self) -> None:
+        """ Reads .txt file with contacts' data, deserializes it and loads
+        them into field as dict of Contact objects where key is id and value
+        is Contact. """
         with open(file=self.file_path, mode='r', encoding='UTF-8') as f:
             for i, line in enumerate(f.readlines(), start=1):
                 name, num, info = line.split(self.sep)
@@ -27,6 +33,7 @@ class PhoneBookRepository:
 
     @work_ready_checker
     def save_contacts(self) -> None:
+        """ Writes serialized Contacts' data into file. """
         with open(file=self.file_path, mode='w+', encoding='UTF-8') as f:
             for c in self.contacts.values():
                 f.write(f'{self.sep.join(c.__dict__.values())}\n')
@@ -35,12 +42,15 @@ class PhoneBookRepository:
 
     @work_ready_checker
     def get_contact_by_id(self, contact_id: int) -> Contact:
+        """ Retrieves Contact obj by id. """
         if not isinstance(contact := self.contacts.get(contact_id), Contact):
             raise KeyError(f'No contact with such id: {contact_id}.')
         return contact
 
     @work_ready_checker
     def delete_contact_by_id(self, contact_id: int) -> bool:
+        """ Deletes Contact obj by contact_id.
+        Raises KeyError if no such contact_id. """
         try:
             self.contacts.pop(contact_id)
             return True
@@ -49,10 +59,12 @@ class PhoneBookRepository:
 
     @work_ready_checker
     def get_contacts(self) -> Dict[int, Contact]:
+        """ Returns raw dict of Contacts. """
         return self.contacts
 
     @work_ready_checker
-    def add_contact(self, contact) -> None:
+    def add_contact(self, contact: Contact) -> None:
+        """ Adds Contact. """
         self.contacts[len(self.contacts)+1] = contact
 
     def __str__(self):
