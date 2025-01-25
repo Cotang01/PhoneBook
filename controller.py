@@ -28,7 +28,7 @@ class PhoneBookController:
                 return func(self, *args, **kwargs)
             except Exception as e:
                 self.logger.error(f'{e.__class__.__name__} has occurred: {e}')
-                raise
+                return False
         return wrapper
 
     @log_exec_and_catch_excep
@@ -53,6 +53,8 @@ class PhoneBookController:
     @log_exec_and_catch_excep
     def modify_contact(self, contact_id, data) -> bool:
         contact = self.repo.get_contact_by_id(contact_id)
+        if contact is None:
+            return False
         for field, val in data.items():
             if val:
                 contact.__dict__[field] = val
