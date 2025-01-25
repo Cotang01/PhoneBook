@@ -36,10 +36,13 @@ class PhoneBookController:
 
     @log_exec_and_catch_excep
     def load_book(self) -> None:
+        """ Makes call to repository layer to load Contacts' data. """
         self.repo.load_contacts()
 
     @log_exec_and_catch_excep
     def save_book(self) -> None:
+        """ Makes call to repository layer to save current state of
+         Contacts' data. """
         self.repo.save_contacts()
 
     def get_work_time(self) -> float:
@@ -48,14 +51,18 @@ class PhoneBookController:
 
     @log_exec_and_catch_excep
     def add_contact(self, data: dict[str, str]) -> None:
+        """ Creates new Contact obj and calls repository layer to add obj. """
         self.repo.add_contact(Contact(**data))
 
     @log_exec_and_catch_excep
     def remove_contact(self, contact_id: int) -> bool:
+        """ Calls repository layer to remove Contact obj by contact_id. """
         return self.repo.delete_contact_by_id(contact_id=contact_id)
 
     @log_exec_and_catch_excep
     def modify_contact(self, contact_id: int, data: Dict[str, str]) -> bool:
+        """ Calls repository layer to replace Contact obj data with new one
+         if not blank. For example if name: '', then name doesn't change. """
         contact = self.repo.get_contact_by_id(contact_id)
         if contact is None:
             return False
@@ -66,6 +73,7 @@ class PhoneBookController:
 
     @log_exec_and_catch_excep
     def get_str_contacts(self) -> Dict[int, Contact]:
+        """ Calls repository layer to get all Contacts. """
         return self.repo.get_contacts()
 
     def __str__(self):
